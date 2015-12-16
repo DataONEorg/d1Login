@@ -9,6 +9,7 @@ The d1_certificate library offers some routines to assist with authenticating fo
 4. The certificate is signed and moved to a consistent location.
 
 Caveats:
+
 1. A web browser is required
 2. It is assumed that the file downloaded by the web browser is located in ${HOME}/Downloads
 3. The generated certificate is placed into ${HOME}/.dataone/certificates
