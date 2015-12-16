@@ -9,7 +9,7 @@ import logging
 import webbrowser
 
 import grid_shib
-
+from certinfo import *
 
 def getDefaultCertificatePath():
   '''Return the default path for a user certificate, creating the expected
