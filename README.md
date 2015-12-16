@@ -18,6 +18,8 @@ Caveats:
 ```python
 >>> import d1_certificate
 >>> certpath = d1_certificate.login(overwrite=True)
+# Browser window opens for authentication
+
 >>> print certpath
 /Users/vieglais/.dataone/certificates/x509up_u501
 
@@ -29,4 +31,8 @@ Caveats:
  'subject_info': None}
 
 ```
+
+## Installation
+
+Put the d1_certificate folder on your PYTHONPATH.
 
