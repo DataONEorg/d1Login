@@ -17,11 +17,15 @@ Caveats:
 ```python
 >>> import d1_certificate
 >>> certpath = d1_certificate.login(overwrite=True)
+>>> print certpath
+/Users/vieglais/.dataone/certificates/x509up_u501
+
 >>> d1_certificate.getSubjectFromCertFile( certpath )
 {'not_after': '20151216225323Z',
  'not_before': '20151216044823Z',
  'status': True,
  'subject': 'CN=Dave Vieglais A34511,O=Google,C=US,DC=cilogon,DC=org',
  'subject_info': None}
+
 ```
 
