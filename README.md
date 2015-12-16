@@ -15,9 +15,11 @@ Caveats:
 3. The generated certificate is placed into ${HOME}/.dataone/certificates
 
 ## Example
+
 ```python
 >>> import d1_certificate
->>> certpath = d1_certificate.login(overwrite=True)
+>>> service = d1_certificate.LOGIN_SERVICE['dev']
+>>> certpath = d1_certificate.login(overwrite=True, service=service)
 # Browser window opens for authentication
 
 >>> print certpath

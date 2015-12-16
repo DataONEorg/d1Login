@@ -11,6 +11,17 @@ import webbrowser
 import grid_shib
 from certinfo import *
 
+LOGIN_SERVICE = {
+  'production':'https://cilogon.org/?skin=dataone',
+  'stage':'https://cilogon.org/?skin=dataonestage',
+  'stage-2':'https://cilogon.org/?skin=dataonestage2',
+  'sandbox':'https://cilogon.org/?skin=dataonesandbox',
+  'sandbox-2':'https://cilogon.org/?skin=dataonesandbox2',
+  'dev':'https://cilogon.org/?skin=dataonedev',
+  'dev-2':'https://cilogon.org/?skin=dataonedev2',
+}
+
+
 def getDefaultCertificatePath():
   '''Return the default path for a user certificate, creating the expected
   location if necessary.
@@ -35,8 +46,9 @@ def getDefaultCertificatePath():
 
 
 def login(openbrowser=None,
-          service="https://cilogon.org/?skin=dataone", 
-          downloadfile=os.path.expanduser(os.path.join('~', 'Downloads', 'shibCILaunchGSCA.jnlp')),
+          service=LOGIN_SERVICE['dev'], 
+          downloadfile=os.path.expanduser(os.path.join('~', \
+                                       'Downloads', 'shibCILaunchGSCA.jnlp')),
           overwrite=False,
           waitseconds=60,
           certdest=getDefaultCertificatePath()):
