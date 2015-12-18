@@ -34,6 +34,21 @@ Caveats:
 
 ```
 
+On OS X, the certificate can then be imported into the keychain for browser interactions with nodes in the authenticated environment. For example:
+
+```bash
+CERT=/Users/vieglais/.dataone/certificates/x509up_u501
+openssl x509 -outform der -in ${CERT} -out "${CERT}.der"
+security add-certificates "${CERT}.der"
+```
+
+Now open a browser (chrome or safari, firefox uses it's own cert management independent of keychain)
+and visit the URL: 
+
+    https://cn-dev.test.dataone.org/cn/v2/diag/subject
+
+You should see your credentials in the xml response.
+
 ## Installation
 
 Put the d1_certificate folder on your PYTHONPATH.
