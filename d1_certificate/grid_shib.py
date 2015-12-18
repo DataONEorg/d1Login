@@ -176,24 +176,22 @@ def getPropertiesFromJNLP(fname):
   return res
   
 
-def retrieveCertificate(fjnlp, fdest):
+def retrieveCertificate(fjnlp, fdest, lifetime_seconds=None):
   '''Download a client certificate from CILogon given the downloaded .jnlp file.
   
   fjnlp = full path to .jnlp file
   fdest = the name of hte file that the resulting private and public key 
           combination will be written to. Note that this should be secured since 
           the key provides access to potentially restricted resources.
+  lifetime_seconds = requested lifetime in seconds of the certificate. The 
+          default provided in the JNLP can be overridden to set whatever 
+          duration is desired. 
   '''
   props = getPropertiesFromJNLP(fjnlp)
   credIssuer = GridShibCACredentialIssuerURL(props['WebAppURL'])
-  credential = credIssuer.requestCertificate(props['AuthenticationToken'], props['lifetime'])
+  if lifetime_seconds is None:
+    lifetime_seconds = props['lifetime']
+  credential = credIssuer.requestCertificate(props['AuthenticationToken'], lifetime_seconds)
   credential.writeGlobusCredential(fdest)
   return fdest
   
-
-if __name__ == "__main__":
-  logging.basicConfig(level=logging.DEBUG)
-  login(overwrite=True)
-  #fdest = getDefaultCertificatePath()
-  #res = retrieveCertificate("/Users/vieglais/Downloads/shibCILaunchGSCA.jnlp", fdest)
-  #print res

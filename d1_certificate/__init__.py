@@ -45,13 +45,20 @@ def getDefaultCertificatePath():
   return fdest
 
 
-def login(openbrowser=None,
+def defaultBrowserAction(service):
+  '''Open a web browser at the URL service.
+  '''
+  ui = webbrowser.open(service, new=1, autoraise=True)
+  return ui
+
+
+def login(openbrowser=defaultBrowserAction,
           service=LOGIN_SERVICE['dev'], 
-          downloadfile=os.path.expanduser(os.path.join('~', \
-                                       'Downloads', 'shibCILaunchGSCA.jnlp')),
+          downloadfile=os.path.expanduser(os.path.join('~', 'Downloads', 'shibCILaunchGSCA.jnlp')),
           overwrite=False,
           waitseconds=60,
-          certdest=getDefaultCertificatePath()):
+          certdest=getDefaultCertificatePath(),
+          lifetime_seconds=None):
   '''Open a browser at the CILogon site and wait for the .jnlp file to be 
   downloaded. Note that this process is fragile because it relies on the 
   name of the file and its location to be consistent. Could probably rig up
@@ -59,7 +66,8 @@ def login(openbrowser=None,
   
   @param openbrowser is an optional callback that if set, initiates a process 
     that logs in the user and initiates download of the .jnlp file. If None, 
-    then the behavior is to open a web browser window to the service location.
+    then it is assumed that some other mechanism will cause the .jnlp
+    to be present in the expected location.
   
   @param service: The URL of the service to contact for logging in
   
@@ -75,16 +83,15 @@ def login(openbrowser=None,
     will be placed after downloading. An existing file of that name will be 
     overwritten if overwrite is True.
     
+  @param lifetime_seconds: Certificate lifetime in seconds. If None, then the 
+    default value specified in the downloaded .jnlp file will be used (64800)
+    
   @return Path to the retrieved certificate
   '''
-  if os.path.exists(downloadfile):
-    if not overwrite:
-      raise Exception("Download file exists and overwrite not specified. %s" % downloadfile)
-    os.remove(downloadfile)
-  if openbrowser is None:
-    ui = webbrowser.open(service,new=1, autoraise=True)
-  else:
-    openbrowser()
+  if not openbrowser is None:
+    openbrowser(service)
+  if os.path.exists(certdest) and not overwrite:
+    raise IOError("Certificate file exists and overwrite not specified.")
   counter = 0
   increment = 2
   while not os.path.exists(downloadfile):
@@ -93,11 +100,15 @@ def login(openbrowser=None,
     logging.info("Timer %d of %d seconds elapsed", counter, waitseconds)
     if counter > waitseconds:
       raise Exception("Timed out waiting for login to complete")
-  res = grid_shib.retrieveCertificate(downloadfile, certdest)
+  res = grid_shib.retrieveCertificate(downloadfile, 
+                                      certdest, 
+                                      lifetime_seconds=lifetime_seconds)
+  os.remove(downloadfile)
   logging.info(res)
   return res
   
 
 if __name__ == "__main__":
   logging.basicConfig(level=logging.DEBUG)
-  login(overwrite=True)
+  cert_file = login(overwrite=True)
+  print getSubjectFromCertFile(cert_file)
