@@ -1,7 +1,7 @@
 # d1Login
 Python helper for authenticating in a DataONE environment.
 
-The d1_certificate library offers some routines to assist with authenticating for interactions with DataONE services. Authentication requires a web browser UI, and so is not suitable for use on headles systems. The basic process is:
+The d1_certificate library offers some routines to assist with authenticating for interactions with DataONE services. Authentication requires a web browser UI, and so is not suitable for use on headless systems. The basic process is:
 
 1. A web browser is opened to select an identity provider
 2. Credentials are entered into the selected IDP
