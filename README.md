@@ -50,6 +50,15 @@ and visit the URL:
 
 You should see your credentials in the xml response.
 
+On Yosemite, you can no longer use .pem format certificates to authenticate using curl [See: http://curl.haxx.se/mail/archive-2014-10/0053.html ]. Instead, convert to a .p12 format certificate and use that instead. Note of course, that entering your password on the command line like this is a security risk since it will appear in bash history, log files, and so forth. Example:
+
+```bash
+CERT=/Users/vieglais/.dataone/certificates/x509up_u501
+openssl pkcs12 -export -in ${CERT} -out ${CERT}.p12 -passout pass:Some_Password
+curl -E ${CERT}.p12:Some_Password "https://cn.dataone.org/cn/v2/diag/subject"
+```
+
+
 ## Installation
 
 Put the d1_certificate folder on your PYTHONPATH.
