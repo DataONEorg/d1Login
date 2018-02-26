@@ -108,7 +108,3 @@ def login(openbrowser=defaultBrowserAction,
   return res
   
 
-if __name__ == "__main__":
-  logging.basicConfig(level=logging.DEBUG)
-  cert_file = login(overwrite=True)
-  print(getSubjectFromCertFile(cert_file))

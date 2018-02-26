@@ -27,7 +27,7 @@ def getSubjectFromName(xName):
   parts = xName.get_components()
   res = []
   for part in parts:
-    res.append("%s=%s" % (part[0].upper(), part[1]))
+    res.append(str("%s=%s" % (str(part[0], encoding='utf-8').upper(), str(part[1], encoding='utf-8'))))
   res.reverse()
   return ",".join(res)
 
@@ -44,7 +44,7 @@ def dumpExtensions(x509):
       v = decoder.decode(ext.get_data())
       logging.debug("  Value: %s" % str(v))
     except PyAsn1Error as err:
-      logging.warn(err)
+      logging.warning(err)
       logging.debug("  Value: %s" % str(ext.get_data()))
   
 
@@ -75,17 +75,16 @@ def getSubjectInfoFromCert(x509):
   matches = getMatchingSubjectInfoFromCert(x509)
   for match in matches:
     try:
-      match = str(match)
       #Verify the thing is valid XML
       logging.debug("Loading xml structure")
-      doc = etree.fromstring( match )
+      doc = etree.fromstring( bytes(match) )
       #Is this a subject info structure?
       logging.debug("Looking for subjectInfo element...")
       for ns in NAMESPACES:
         test = "{%s}subjectInfo" % NAMESPACES[ns]
         if doc.tag == test:
           logging.debug("Match on %s" % test)
-          return match
+          return match.prettyPrint()
     except Exception as e:
       logging.exception( e )
       pass
@@ -94,22 +93,22 @@ def getSubjectInfoFromCert(x509):
 
 def getSubjectFromCertFile(certFileName):
   status = True
-  certf = file(certFileName, "rb")
+  certf = open(certFileName, "rb")
   x509 = crypto.load_certificate(crypto.FILETYPE_PEM, certf.read())
   certf.close()
   #dumpExtensions(x509)
   if x509.has_expired():
-    logging.warn("Certificate has expired!")
+    logging.warning("Certificate has expired!")
     status = False
   else:
     logging.info("Certificate OK")
     status = True
   logging.info("Issuer: %s" % getSubjectFromName(x509.get_issuer()))
-  logging.info("Not before: %s" % x509.get_notBefore())
-  logging.info("Not after: %s"  % x509.get_notAfter())
+  logging.info("Not before: %s" % str(x509.get_notBefore(), encoding='utf-8'))
+  logging.info("Not after: %s"  % str(x509.get_notAfter(), encoding='utf-8'))
   return {'subject': getSubjectFromName(x509.get_subject()),
           'subject_info': getSubjectInfoFromCert(x509),
-          'not_before': x509.get_notBefore(),
-          'not_after': x509.get_notAfter(),
+          'not_before': str(x509.get_notBefore(), encoding='utf-8'),
+          'not_after': str(x509.get_notAfter(), encoding='utf-8'),
           'status': status, 
           }
