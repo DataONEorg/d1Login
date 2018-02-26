@@ -8,8 +8,8 @@ import time
 import logging
 import webbrowser
 
-import grid_shib
-from certinfo import *
+from . import grid_shib
+from .certinfo import *
 
 LOGIN_SERVICE = {
   'production':'https://cilogon.org/?skin=dataone',
@@ -38,7 +38,7 @@ def getDefaultCertificatePath():
   if not os.path.exists(fdest):
     logging.info("Certificate folder %s does not exist. Creating...", fdest)
     os.makedirs(fdest)
-    os.chmod(fdest, 0700)
+    os.chmod(fdest, 0o700)
     
   fname = "x509up_u%d" % os.getuid()
   fdest = os.path.join(fdest, fname)
@@ -111,4 +111,4 @@ def login(openbrowser=defaultBrowserAction,
 if __name__ == "__main__":
   logging.basicConfig(level=logging.DEBUG)
   cert_file = login(overwrite=True)
-  print getSubjectFromCertFile(cert_file)
+  print(getSubjectFromCertFile(cert_file))

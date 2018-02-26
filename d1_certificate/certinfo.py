@@ -36,14 +36,14 @@ def dumpExtensions(x509):
   decoder.decode.defaultErrorState = decoder.stDumpRawValue
   nExt = x509.get_extension_count()
   logging.debug("There are %d extensions in this certificate" % nExt)
-  for i in xrange(0, nExt):
+  for i in range(0, nExt):
     ext = x509.get_extension(i)
     logging.debug("Extension %d:" % i)
     logging.debug("  Name: %s" % ext.get_short_name())
     try:
       v = decoder.decode(ext.get_data())
       logging.debug("  Value: %s" % str(v))
-    except PyAsn1Error, err:
+    except PyAsn1Error as err:
       logging.warn(err)
       logging.debug("  Value: %s" % str(ext.get_data()))
   
@@ -63,7 +63,7 @@ def getMatchingSubjectInfoFromCert(x509):
   decoder.decode.defaultErrorState = decoder.stDumpRawValue
   nExt = x509.get_extension_count()
   res = []
-  for i in xrange(0, nExt):
+  for i in range(0, nExt):
     ext = x509.get_extension(i)
     sv = decoder.decode(ext.get_data())
     if str(sv).find("subjectInfo") >= 0:
@@ -86,7 +86,7 @@ def getSubjectInfoFromCert(x509):
         if doc.tag == test:
           logging.debug("Match on %s" % test)
           return match
-    except Exception, e:
+    except Exception as e:
       logging.exception( e )
       pass
   return None

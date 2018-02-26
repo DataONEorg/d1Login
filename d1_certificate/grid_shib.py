@@ -83,8 +83,8 @@ class X509Credential:
       os.remove(fpath)
     # O_EXCL|O_CREAT to prevent a race condition where someone
     # else opens the file first.
-    fd = os.open(fpath, os.O_WRONLY|os.O_CREAT|os.O_EXCL, 0600)
-    file = os.fdopen(fd, "w")
+    fd = os.open(fpath, os.O_WRONLY|os.O_CREAT|os.O_EXCL, 0o600)
+    file = os.fdopen(fd, "wb")
     file.write(certificatePEM)
     file.write(privateKeyPEM)
     file.close()
@@ -141,7 +141,7 @@ class GridShibCACredentialIssuerURL(GridShibCAURL):
     logging.debug("Posting request")
     try:
       certificatePEM = self.post(postFields)
-    except requests.exceptions.HTTPError, err:
+    except requests.exceptions.HTTPError as err:
       raise err
     logging.debug("Got response:\n%s", certificatePEM)
     try:
@@ -165,7 +165,7 @@ def getPropertiesFromJNLP(fname):
   fname = name of .jnlp file to parse
   '''
   res = {}
-  xml = file(fname).read()
+  xml = open(fname,'r', encoding='utf-8').read()
   jnlp = ET.fromstring(xml.strip())
   properties = jnlp.findall(".//argument")
   for property in properties:
