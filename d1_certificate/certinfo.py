@@ -9,6 +9,7 @@ from OpenSSL import crypto
 from pyasn1.error import PyAsn1Error
 from pyasn1.codec.ber import decoder
 from lxml import etree
+from codecs import open
 
 
 NAMESPACES = {
@@ -16,6 +17,17 @@ NAMESPACES = {
   "d1_1": "http://ns.dataone.org/service/types/v1.1",
   "d1_2": "http://ns.dataone.org/service/types/v2.0",
   }
+
+def cnvstr3(o, encoding='utf-8'):
+  return str(o, encoding=encoding)
+
+def cnvstr2(o, encoding='utf-8'):
+  return str(o)
+
+cnvstr = cnvstr2
+if sys.version_info >= (3, 0):
+  cnvstr = cnvstr3
+
 
 
 def getSubjectFromName(xName):
@@ -27,7 +39,7 @@ def getSubjectFromName(xName):
   parts = xName.get_components()
   res = []
   for part in parts:
-    res.append(str("%s=%s" % (str(part[0], encoding='utf-8').upper(), str(part[1], encoding='utf-8'))))
+    res.append(str("%s=%s" % (cnvstr(part[0]).upper(), cnvstr(part[1]))))
   res.reverse()
   return ",".join(res)
 
@@ -104,11 +116,11 @@ def getSubjectFromCertFile(certFileName):
     logging.info("Certificate OK")
     status = True
   logging.info("Issuer: %s" % getSubjectFromName(x509.get_issuer()))
-  logging.info("Not before: %s" % str(x509.get_notBefore(), encoding='utf-8'))
-  logging.info("Not after: %s"  % str(x509.get_notAfter(), encoding='utf-8'))
+  logging.info("Not before: %s" % cnvstr(x509.get_notBefore()))
+  logging.info("Not after: %s"  % cnvstr(x509.get_notAfter()))
   return {'subject': getSubjectFromName(x509.get_subject()),
           'subject_info': getSubjectInfoFromCert(x509),
-          'not_before': str(x509.get_notBefore(), encoding='utf-8'),
-          'not_after': str(x509.get_notAfter(), encoding='utf-8'),
+          'not_before': cnvstr(x509.get_notBefore()),
+          'not_after': cnvstr(x509.get_notAfter()),
           'status': status, 
           }

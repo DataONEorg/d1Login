@@ -40,6 +40,7 @@ import time
 import logging
 import xml.etree.ElementTree as ET
 import webbrowser
+from codecs import open
 
 ######################################################################
 # From: https://cilogon.org/gridshib-ca/gridshibca-client.py
